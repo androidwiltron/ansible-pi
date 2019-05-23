@@ -2,8 +2,8 @@
 - set_fact:
     real_ansible_host: "{{ ansible_host }}"
 
-- name: 'Configure WIFI'
-  copy: src=./wpa_supplicant.conf dest=/etc/wpa_supplicant/wpa_supplicant.conf mode=0600
+# - name: 'Configure WIFI'
+# copy: src=./wpa_supplicant.conf dest=/etc/wpa_supplicant/wpa_supplicant.conf mode=0600
 
 - name: 'Update APT package cache'
   action: apt update_cache=yes
@@ -11,12 +11,35 @@
 - name: 'Upgrade APT to the lastest packages'
   action: apt upgrade=safe
 
-- name: 'Reboot'
-  shell: sleep 2 && reboot
-  async: 1
-  poll: 0
-  ignore_errors: true
+- name: Install a list of packages
+  apt:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - ffmpeg
+    - python-configobj
+    - python-dateutil
+    - python-pycurl
+    - python-flask
+    - python-sqlalchemy
+    - python-sdnotify
 
-- name: "Wait for Raspberry PI to come back"
-  local_action: wait_for host={{ real_ansible_host }} port=22 state=started delay=10
-  become: false
+- name: "Setup /etc/hosts"
+  template: >
+          src=hosts.j2
+          dest=/etc/hosts
+
+- name: Change the hostname
+  hostname:
+    name: "{{new_hostname}}"
+
+
+# - name: 'Reboot'
+#   shell: sleep 2 && reboot
+#   async: 1
+#   poll: 0
+#   ignore_errors: true
+#
+# - name: "Wait for Raspberry PI to come back"
+#   local_action: wait_for host={{ real_ansible_host }} port=22 state=started delay=10
+#   become: false

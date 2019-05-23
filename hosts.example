@@ -1,2 +1,11 @@
 [webservers]
-192.168.1.200
+raspberry1.local new_hostname=raspberry1.local
+raspberry2.local new_hostname=raspberry2.local
+raspberry3.local new_hostname=raspberry3.local
+raspberry4.local new_hostname=raspberry4.local
+raspberry5.local new_hostname=raspberry5.local
+raspberry6.local new_hostname=raspberry6.local
+raspberry7.local new_hostname=raspberry7.local
+raspberry8.local new_hostname=raspberry8.local
+raspberry9.local new_hostname=raspberry9.local
+raspberry10.local new_hostname=raspberry10.local
