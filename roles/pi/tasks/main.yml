@@ -5,11 +5,12 @@
 # - name: 'Configure WIFI'
 # copy: src=./wpa_supplicant.conf dest=/etc/wpa_supplicant/wpa_supplicant.conf mode=0600
 
-- name: 'Update APT package cache'
-  action: apt update_cache=yes
-
-- name: 'Upgrade APT to the lastest packages'
-  action: apt upgrade=safe
+- name: setup apt
+  apt:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - python-apt
 
 - name: Install a list of packages
   apt:
@@ -23,15 +24,32 @@
     - python-flask
     - python-sqlalchemy
     - python-sdnotify
+    - git
+
+- name: 'Update APT package cache'
+  action: apt update_cache=yes
+
+- name: 'Upgrade APT to the lastest packages'
+  action: apt upgrade=safe
 
 - name: "Setup /etc/hosts"
   template: >
           src=hosts.j2
           dest=/etc/hosts
+  tags: hosts
 
 - name: Change the hostname
   hostname:
     name: "{{new_hostname}}"
+  tags: hosts
+
+- name: change password
+  user:
+    name: pi 
+    update_password: always
+    password: "{{ 'changeme' | password_hash('sha512') }}"
+  tags:
+    - changepwd
 
 
 # - name: 'Reboot'
